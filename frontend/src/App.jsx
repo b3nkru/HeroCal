@@ -6,17 +6,31 @@ import {
   updateEvent,
   deleteEvent,
   disconnectAccount,
+  getMe,
+  logoutUser,
+  UnauthorizedError,
 } from './api'
 import Sidebar from './components/Sidebar'
 import CalendarView from './components/CalendarView'
 import EventModal from './components/EventModal'
+import LoginScreen from './components/LoginScreen'
 
 export default function App() {
+  const [authed, setAuthed] = useState(null) // null=loading, false=login, true=app
   const [accounts, setAccounts] = useState({})
   const [calendars, setCalendars] = useState([])
   const [visibleCalendars, setVisibleCalendars] = useState(new Set())
   const [modalEvent, setModalEvent] = useState(null) // null = closed
   const [refreshKey, setRefreshKey] = useState(0)
+
+  useEffect(() => {
+    getMe().then(() => setAuthed(true)).catch(() => setAuthed(false))
+  }, [])
+
+  const handleLogout = async () => {
+    await logoutUser()
+    setAuthed(false)
+  }
 
   const loadData = useCallback(async () => {
     try {
@@ -34,7 +48,8 @@ export default function App() {
         return next
       })
     } catch (e) {
-      console.error('loadData error', e)
+      if (e instanceof UnauthorizedError) setAuthed(false)
+      else console.error('loadData error', e)
     }
   }, [])
 
@@ -140,6 +155,9 @@ export default function App() {
     setRefreshKey(k => k + 1)
   }
 
+  if (authed === null) return <div className="app-loading">Loading…</div>
+  if (!authed) return <LoginScreen onLogin={() => { setAuthed(true); loadData() }} />
+
   return (
     <div className="app">
       <Sidebar
@@ -149,6 +167,7 @@ export default function App() {
         onToggleCalendar={handleToggleCalendar}
         onToggleAccount={handleToggleAccount}
         onDisconnect={handleDisconnect}
+        onLogout={handleLogout}
       />
       <main className="main">
         <CalendarView

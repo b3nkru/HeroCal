@@ -11,6 +11,7 @@ export default function Sidebar({
   onToggleCalendar,
   onToggleAccount,
   onDisconnect,
+  onLogout,
 }) {
   const accountIds = ['account1', 'account2', 'account3']
 
@@ -84,6 +85,9 @@ export default function Sidebar({
           </div>
         )
       })}
+      <div className="sidebar-footer">
+        <button className="btn-ghost sidebar-logout" onClick={onLogout}>Sign out</button>
+      </div>
     </aside>
   )
 }

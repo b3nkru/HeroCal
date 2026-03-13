@@ -1,9 +1,28 @@
 const BASE = '/api'
 
+export class UnauthorizedError extends Error {}
+
 async function req(path, options = {}) {
-  const res = await fetch(BASE + path, options)
+  const res = await fetch(BASE + path, { credentials: 'same-origin', ...options })
+  if (res.status === 401) throw new UnauthorizedError()
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
   return res.json()
+}
+
+export async function getMe() {
+  return req('/app-auth/me')
+}
+
+export async function loginUser(username, password) {
+  return req('/app-auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password }),
+  })
+}
+
+export async function logoutUser() {
+  return req('/app-auth/logout', { method: 'POST' })
 }
 
 export async function getAuthStatus() {
