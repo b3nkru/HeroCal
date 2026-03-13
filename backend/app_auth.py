@@ -1,3 +1,4 @@
+import base64
 import os
 
 import google_auth_oauthlib.flow
@@ -54,7 +55,11 @@ class LoginBody(BaseModel):
 @router.post("/login")
 def login(body: LoginBody, response: Response):
     expected_user = os.environ.get("APP_USERNAME", "")
-    expected_hash = os.environ.get("APP_PASSWORD_HASH", "")
+    encoded_hash = os.environ.get("APP_PASSWORD_HASH", "")
+    try:
+        expected_hash = base64.b64decode(encoded_hash).decode()
+    except Exception:
+        expected_hash = ""
     if not expected_hash or body.username != expected_user or not pwd_context.verify(body.password, expected_hash):
         raise HTTPException(401, "Invalid credentials")
     create_session(response, body.username)
