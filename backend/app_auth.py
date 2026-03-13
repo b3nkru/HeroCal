@@ -1,17 +1,15 @@
 import base64
 import os
 
+import bcrypt
 import google_auth_oauthlib.flow
 from fastapi import APIRouter, HTTPException, Request, Response
 from fastapi.responses import RedirectResponse
 from googleapiclient.discovery import build
 from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
-from passlib.context import CryptContext
 from pydantic import BaseModel
 
 router = APIRouter()
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 SESSION_COOKIE = "herocal_session"
 SESSION_MAX_AGE = 60 * 60 * 24 * 30  # 30 days
@@ -60,7 +58,7 @@ def login(body: LoginBody, response: Response):
         expected_hash = base64.b64decode(encoded_hash).decode()
     except Exception:
         expected_hash = ""
-    if not expected_hash or body.username != expected_user or not pwd_context.verify(body.password, expected_hash):
+    if not expected_hash or body.username != expected_user or not bcrypt.checkpw(body.password.encode(), expected_hash.encode()):
         raise HTTPException(401, "Invalid credentials")
     create_session(response, body.username)
     return {"ok": True}
