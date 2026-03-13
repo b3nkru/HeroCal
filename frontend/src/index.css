@@ -1,0 +1,363 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --sidebar-bg: #1e1e2e;
+  --sidebar-text: #cdd6f4;
+  --sidebar-muted: #6c7086;
+  --sidebar-hover: #313244;
+  --accent: #89b4fa;
+  --danger: #f38ba8;
+  --bg: #eff1f5;
+  --white: #ffffff;
+  --border: #dde1e9;
+  --text: #4c4f69;
+  --radius: 8px;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Layout */
+.app {
+  display: flex;
+  height: 100vh;
+}
+
+.main {
+  flex: 1;
+  padding: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.calendar-wrap {
+  flex: 1;
+  background: var(--white);
+  border-radius: var(--radius);
+  overflow: hidden;
+  padding: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.08);
+}
+
+/* Sidebar */
+.sidebar {
+  width: 260px;
+  background: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  display: flex;
+  flex-direction: column;
+  padding: 16px 12px;
+  overflow-y: auto;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.sidebar-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--accent);
+  padding: 4px 8px 16px;
+  letter-spacing: .5px;
+}
+
+.account-section {
+  margin-bottom: 12px;
+}
+
+.account-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  border-radius: 6px;
+}
+
+.account-info {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
+.account-label {
+  font-size: .8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--sidebar-text);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dot-green { background: #a6e3a1; }
+.dot-gray  { background: var(--sidebar-muted); }
+
+.account-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.btn-ghost {
+  background: none;
+  border: none;
+  color: var(--sidebar-muted);
+  cursor: pointer;
+  padding: 2px 5px;
+  border-radius: 4px;
+  font-size: .85rem;
+  line-height: 1;
+}
+
+.btn-ghost:hover { background: var(--sidebar-hover); color: var(--sidebar-text); }
+.btn-danger-ghost:hover { color: var(--danger) !important; }
+
+.btn-connect {
+  font-size: .72rem;
+  color: var(--accent);
+  text-decoration: none;
+  border: 1px solid var(--accent);
+  padding: 2px 8px;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+
+.btn-connect:hover { background: var(--accent); color: var(--sidebar-bg); }
+
+.cal-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px 4px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: .82rem;
+  color: var(--sidebar-muted);
+}
+
+.cal-item:hover { background: var(--sidebar-hover); }
+
+.cal-item input[type="checkbox"] {
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.cal-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.cal-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-hint {
+  font-size: .75rem;
+  color: var(--sidebar-muted);
+  padding: 4px 8px 4px 20px;
+  font-style: italic;
+}
+
+/* FullCalendar overrides */
+.fc {
+  height: 100%;
+}
+
+.fc .fc-button {
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
+  font-size: .82rem !important;
+}
+
+.fc .fc-button:hover {
+  opacity: .85;
+}
+
+.fc .fc-button-active {
+  background: #5b9ef8 !important;
+}
+
+.fc .fc-toolbar-title {
+  font-size: 1.1rem !important;
+  font-weight: 600 !important;
+}
+
+/* Modal */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: var(--white);
+  border-radius: 12px;
+  width: 480px;
+  max-width: 95vw;
+  box-shadow: 0 8px 32px rgba(0,0,0,.18);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-header h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.modal-close {
+  color: var(--text) !important;
+  font-size: 1rem !important;
+}
+
+.modal-body {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.input-title {
+  width: 100%;
+  border: none;
+  border-bottom: 2px solid var(--border);
+  font-size: 1.1rem;
+  padding: 6px 0;
+  outline: none;
+  color: var(--text);
+  background: transparent;
+}
+
+.input-title:focus {
+  border-bottom-color: var(--accent);
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: .88rem;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.time-row {
+  display: flex;
+  gap: 12px;
+}
+
+.time-row .field {
+  flex: 1;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.field label {
+  font-size: .78rem;
+  color: var(--sidebar-muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+}
+
+.field input,
+.field select,
+.field textarea {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 7px 10px;
+  font-size: .88rem;
+  color: var(--text);
+  background: var(--white);
+  outline: none;
+  width: 100%;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: var(--accent);
+}
+
+.field textarea {
+  resize: vertical;
+  font-family: inherit;
+}
+
+.modal-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px 16px;
+  border-top: 1px solid var(--border);
+}
+
+.btn {
+  padding: 8px 18px;
+  border-radius: 6px;
+  border: none;
+  font-size: .88rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--white);
+}
+
+.btn-primary:hover { opacity: .88; }
+
+.btn-secondary {
+  background: var(--border);
+  color: var(--text);
+}
+
+.btn-secondary:hover { background: #c8ccd6; }
+
+.btn-danger {
+  background: #fce4e8;
+  color: var(--danger);
+}
+
+.btn-danger:hover { background: #f9ccd4; }
