@@ -8,9 +8,6 @@ from fastapi.responses import RedirectResponse
 
 from token_store import save_token, delete_token, load_tokens
 
-# Allow HTTP for LAN deployments
-os.environ.setdefault("OAUTHLIB_INSECURE_TRANSPORT", "1")
-
 router = APIRouter()
 
 SCOPES = [
