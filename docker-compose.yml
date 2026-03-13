@@ -6,6 +6,10 @@ services:
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
       - APP_URL=${APP_URL:-http://localhost:7777}
+      - APP_USERNAME=${APP_USERNAME}
+      - APP_PASSWORD_HASH=${APP_PASSWORD_HASH}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - ALLOWED_GOOGLE_EMAILS=${ALLOWED_GOOGLE_EMAILS}
     volumes:
       - ./data:/data
     expose:
