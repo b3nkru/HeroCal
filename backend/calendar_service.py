@@ -1,5 +1,6 @@
 import logging
 import traceback
+import uuid
 from typing import Optional
 
 import google.auth.transport.requests
@@ -80,6 +81,11 @@ def get_events(start: str, end: str, calendar_ids: Optional[str] = None):
                 for e in items:
                     s, en = e["start"], e["end"]
                     all_day = "date" in s
+                    meet_link = None
+                    for ep in e.get("conferenceData", {}).get("entryPoints", []):
+                        if ep.get("entryPointType") == "video":
+                            meet_link = ep.get("uri")
+                            break
                     events.append({
                         "id": f"{aid}__{cal['id']}__{e['id']}",
                         "google_id": e["id"],
@@ -92,6 +98,7 @@ def get_events(start: str, end: str, calendar_ids: Optional[str] = None):
                         "description": e.get("description", ""),
                         "location": e.get("location", ""),
                         "color": color,
+                        "meet_link": meet_link,
                     })
         except Exception as e:
             logger.error("get_events failed for %s: %s", aid, traceback.format_exc())
@@ -107,6 +114,7 @@ class EventBody(BaseModel):
     location: Optional[str] = ""
     account_id: Optional[str] = None
     calendar_id: Optional[str] = None
+    add_meet: Optional[bool] = False
 
 
 @router.post("/events")
@@ -123,6 +131,16 @@ def create_event(body: EventBody):
     else:
         event["start"] = {"dateTime": body.start}
         event["end"] = {"dateTime": body.end}
+    if body.add_meet:
+        event["conferenceData"] = {
+            "createRequest": {
+                "requestId": str(uuid.uuid4()),
+                "conferenceSolutionKey": {"type": "hangoutsMeet"},
+            }
+        }
+        return svc.events().insert(
+            calendarId=body.calendar_id, body=event, conferenceDataVersion=1
+        ).execute()
     return svc.events().insert(calendarId=body.calendar_id, body=event).execute()
 
 

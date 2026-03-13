@@ -24,6 +24,7 @@ export default function EventModal({ event, calendars, onClose, onSave, onDelete
   const [description, setDescription] = useState('')
   const [location, setLocation] = useState('')
   const [calKey, setCalKey] = useState('')
+  const [addMeet, setAddMeet] = useState(false)
 
   useEffect(() => {
     setTitle(event.title ?? '')
@@ -32,6 +33,7 @@ export default function EventModal({ event, calendars, onClose, onSave, onDelete
     setEnd(toLocalInput(event.end, event.allDay))
     setDescription(event.description ?? '')
     setLocation(event.location ?? '')
+    setAddMeet(false)
     if (event.account_id && event.calendar_id) {
       setCalKey(`${event.account_id}||${event.calendar_id}`)
     } else if (calendars.length > 0) {
@@ -62,6 +64,7 @@ export default function EventModal({ event, calendars, onClose, onSave, onDelete
       location,
       account_id: accId,
       calendar_id: calId,
+      add_meet: addMeet,
     })
   }
 
@@ -139,6 +142,32 @@ export default function EventModal({ event, calendars, onClose, onSave, onDelete
               onChange={e => setLocation(e.target.value)}
             />
           </div>
+
+          {isEdit && event.meet_link && (
+            <a
+              className="btn-meet"
+              href={event.meet_link}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <svg width="16" height="16" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" style={{marginRight: 8, flexShrink: 0}}>
+                <path d="M44 14l-9 9V25l9 9V14z" fill="#00832d"/>
+                <path d="M4 11v26a3 3 0 003 3h26a3 3 0 003-3V11a3 3 0 00-3-3H7a3 3 0 00-3 3z" fill="#00832d"/>
+              </svg>
+              Join with Google Meet
+            </a>
+          )}
+
+          {!isEdit && (
+            <label className="checkbox-row">
+              <input
+                type="checkbox"
+                checked={addMeet}
+                onChange={e => setAddMeet(e.target.checked)}
+              />
+              Add Google Meet video conferencing
+            </label>
+          )}
         </div>
 
         <div className="modal-footer">

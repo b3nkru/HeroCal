@@ -82,6 +82,7 @@ export default function App() {
       allDay: info.event.allDay,
       description: info.event.extendedProps.description ?? '',
       location: info.event.extendedProps.location ?? '',
+      meet_link: info.event.extendedProps.meet_link ?? null,
     })
   }
 
@@ -126,6 +127,7 @@ export default function App() {
         all_day: data.allDay,
         description: data.description,
         location: data.location,
+        add_meet: data.add_meet ?? false,
       })
     }
     setModalEvent(null)

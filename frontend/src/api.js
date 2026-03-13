@@ -38,6 +38,7 @@ export async function fetchEvents(start, end, visibleCalendarIds) {
       account_id: e.account_id,
       description: e.description,
       location: e.location,
+      meet_link: e.meet_link ?? null,
     },
   }))
 }
