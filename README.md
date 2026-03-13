@@ -15,14 +15,9 @@ A self-hosted Google Calendar viewer for multiple accounts, running in Docker on
    _(or use "OAuth2 API" — the `userinfo.email` endpoint)_
 5. Create OAuth credentials:
    - APIs & Services → Credentials → Create Credentials → **OAuth client ID**
-   - Application type: **Web application**
+   - Application type: **Desktop app** ← important, not "Web application"
    - Name: HeroCal (or anything)
-   - Authorized redirect URIs — add **all three** of these (one per account slot):
-     ```
-     http://<YOUR_PI_IP>:7777/api/auth/callback/account1
-     http://<YOUR_PI_IP>:7777/api/auth/callback/account2
-     http://<YOUR_PI_IP>:7777/api/auth/callback/account3
-     ```
+   - No redirect URIs needed — Google automatically allows `localhost` for Desktop apps
    - Copy the **Client ID** and **Client Secret**
 
 6. Configure the OAuth consent screen:
@@ -40,7 +35,7 @@ Edit `.env`:
 ```
 GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
 GOOGLE_CLIENT_SECRET=your-client-secret
-APP_URL=http://192.168.1.x:7777   # your Pi's LAN IP
+APP_URL=http://localhost:7777
 ```
 
 ### 3. Build and Run
@@ -51,9 +46,18 @@ docker compose up -d --build
 
 Open `http://<PI_IP>:7777` in your browser.
 
-### 4. Connect Your Google Accounts
+### 4. Connect Your Google Accounts (one-time SSH tunnel required)
 
-In the sidebar, click **Connect** next to each account slot and sign in with the corresponding Google account. After authorizing, you'll be redirected back and the calendars will appear.
+Google doesn't allow private LAN IPs as OAuth redirect URIs, so the initial account connection must go through `localhost`. You only need to do this **once** — tokens are saved and auto-refreshed from then on.
+
+Open an SSH tunnel from your laptop:
+```bash
+ssh -L 7777:localhost:7777 pi@<PI_IP>
+```
+
+Keep that terminal open, then open **`http://localhost:7777`** (not the Pi IP) in your browser. Click **Connect** for each account and complete the Google sign-in. Once all 3 accounts show as connected, close the SSH terminal.
+
+From now on, access the app normally at `http://<PI_IP>:7777` — no tunnel needed.
 
 ## Usage
 

@@ -1,3 +1,5 @@
+import logging
+import traceback
 from typing import Optional
 
 import google.auth.transport.requests
@@ -7,6 +9,8 @@ from pydantic import BaseModel
 
 from auth import build_credentials
 from token_store import load_tokens, save_token
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -45,8 +49,8 @@ def list_calendars():
                     "backgroundColor": c.get("backgroundColor", "#4285f4"),
                     "primary": c.get("primary", False),
                 })
-        except Exception:
-            pass
+        except Exception as e:
+            logger.error("list_calendars failed for %s: %s", aid, traceback.format_exc())
     return result
 
 
@@ -89,8 +93,8 @@ def get_events(start: str, end: str, calendar_ids: Optional[str] = None):
                         "location": e.get("location", ""),
                         "color": color,
                     })
-        except Exception:
-            pass
+        except Exception as e:
+            logger.error("get_events failed for %s: %s", aid, traceback.format_exc())
     return events
 
 

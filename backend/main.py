@@ -1,4 +1,7 @@
+import logging
 import os
+
+logging.basicConfig(level=logging.INFO)
 
 from dotenv import load_dotenv
 from fastapi import FastAPI
