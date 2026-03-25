@@ -478,6 +478,54 @@ body {
 
 .btn-meet:hover { background: rgba(63, 185, 80, .1); }
 
+/* Event info view */
+.info-title {
+  font-size: 1rem !important;
+  font-weight: 600;
+}
+
+.info-title::before { content: none !important; }
+
+.modal-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.icon-btn {
+  font-size: .9rem !important;
+  padding: 2px 6px !important;
+}
+
+.info-body {
+  gap: 10px !important;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: .8rem;
+  color: var(--text);
+}
+
+.info-row--top { align-items: flex-start; }
+
+.info-icon {
+  width: 18px;
+  text-align: center;
+  flex-shrink: 0;
+  font-size: .85rem;
+  opacity: .75;
+}
+
+.info-description {
+  white-space: pre-wrap;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
 /* Login */
 .login-overlay {
   height: 100vh;
